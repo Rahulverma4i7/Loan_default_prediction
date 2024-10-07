@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Default Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-size: 1.5em;
+            color: #4CAF50;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Loan Default prediction</h2>
+        <form action="/predict" method="post">
+            <label for="age">age :</label>
+            <input type="number" name="age" required>
+            
+            <label for="Income">Income:</label>
+            <input type="number"  name="Income" required>
+            
+            <label for="LoanAmount	">LoanAmount	:</label>
+            <input type="number" name="LoanAmount	" required>
+            
+            <label for="credit_score">credit_score:</label>
+            <input type="number" name="credit_score" required>
+
+            <label for="months_employed">months_employed:</label>
+            <input type="number" name="months_employed" required>
+
+            <label for="num_credit_lines">num_credit_lines:</label>
+            <input type="number" step="0.01" name="num_credit_lines" required>
+            
+            <label for="interest_rate">interest_rate:</label>
+            <input type="number" step="0.01" name="interest_rate" required> 
+            
+            <label for="LoanTerm">LoanTerm :</label>
+            <input type="number" step="0.01" name="LoanTerm" required>
+
+            <label for="dti_ratio">dti_ratio:</label>
+            <input type="number" step="0.01" name="dti_ratio" required>
+
+            <label for="Gender_encoded	">Gender_encoded	:</label>
+            <input type="number"  name="Gender_encoded	" required>
+
+            <label for="HasMortgage_encoded">HasMortgage_encoded:</label>
+            <input type="number"  name="HasMortgage_encoded" required>
+
+            <label for="HasDependents_encoded">HasDependents_encoded:</label>
+            <input type="number"   name="HasDependents_encoded" required>
+
+            <label for="HasCoSigner_encoded">HasCoSigner_encoded:</label>
+            <input type="number" step="0.01" name="HasCoSigner_encoded" required>
+
+            <label for="MaritalStatus_Divorced_encoded">MaritalStatus_Divorced_encoded:</label>
+            <input type="number" step="0.01" name="MaritalStatus_Divorced_encoded" required>
+
+            <label for="MaritalStatus_Married_encoded">MaritalStatus_Married_encoded:</label>
+            <input type="number" step="0.01" name="MaritalStatus_Married_encoded" required>
+
+            <label for="MaritalStatus_Single_encoded">MaritalStatus_Single_encoded:</label>
+            <input type="number" step="0.01" name="MaritalStatus_Single_encoded" required>
+
+            <label for="Education_Bachelor's_encoded">Education_Bachelor's_encoded:</label>
+            <input type="number" step="0.01" name="Education_Bachelor's_encoded" required>
+
+            <label for="Education_High School_encoded">Education_High School_encoded:</label>
+            <input type="number" step="0.01" name="Education_High School_encoded" required> 
+
+             <label for="Education_Master's_encoded">Education_Master's_encoded:</label>
+            <input type="number" step="0.01" name="Education_Master's_encoded" required>
+
+            <label for="Education_PhD_encoded">Education_PhD_encoded:</label>
+            <input type="number" step="0.01" name="Education_PhD_encoded" required>
+
+            <label for="EmploymentType_Full-time_encoded">EmploymentType_Full-time_encoded:</label>
+            <input type="number" step="0.01" name="EmploymentType_Full-time_encoded" required>
+
+            <label for="EmploymentType_Part-time_encoded">EmploymentType_Part-time_encoded:</label>
+            <input type="number" step="0.01" name="EmploymentType_Part-time_encoded" required>
+
+            <label for="EmploymentType_Self-employed_encoded">EmploymentType_Self-employed_encoded:</label>
+            <input type="number" step="0.01" name="EmploymentType_Self-employed_encoded" required>
+
+            <label for="EmploymentType_Unemployed_encoded">EmploymentType_Unemployed_encoded:</label>
+            <input type="number" step="0.01" name="EmploymentType_Unemployed_encoded" required>
+
+            <label for="LoanPurpose_Auto_encoded">LoanPurpose_Auto_encoded:</label>
+            <input type="number" step="0.01" name="LoanPurpose_Auto_encoded" required>
+
+            <label for="LoanPurpose_Business_encoded">LoanPurpose_Business_encoded:</label>
+            <input type="number" step="0.01" name="LoanPurpose_Business_encoded" required>
+
+            <label for="LoanPurpose_Education_encoded">LoanPurpose_Education_encoded:</label>
+            <input type="number" step="0.01" name="LoanPurpose_Education_encoded" required>
+
+            <label for="LoanPurpose_Home_encoded">LoanPurpose_Home_encoded:</label>
+            <input type="number" step="0.01" name="LoanPurpose_Home_encoded" required>
+
+            <label for="LoanPurpose_Other_encoded">LoanPurpose_Other_encoded:</label>
+            <input type="number" step="0.01" name="LoanPurpose_Other_encoded" required>
+
+        
+
+            
+            
+            <input type="submit" value="Predict">
+        </form>
+        {% if prediction_text %}
+        <div class="result">{{ prediction }}</div>
+        {% endif %}
+    </div>
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent page refresh
+    
+            const formData = new FormData(form);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.text();
+            document.querySelector('.result').innerHTML = result;
+        });
+    </script>
+</body>
+</html>
